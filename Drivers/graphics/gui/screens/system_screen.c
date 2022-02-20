@@ -188,15 +188,15 @@ static void setStandMode(uint32_t *val) {
   systemSettings.settings.StandMode = *val;
 }
 //=========================================================
-/* static void * getEncoderMode() { */
-/*   temp = systemSettings.settings.EncoderMode; */
-/*   return &temp; */
-/* } */
-/* static void setEncoderMode(uint32_t *val) { */
-/*   systemSettings.settings.EncoderMode = * val; */
-/*   RE_SetMode(&RE1_Data, systemSettings.settings.EncoderMode); */
-/* } */
-/* //========================================================= */
+static void * getEncoderMode() {
+  temp = systemSettings.settings.EncoderMode;
+  return &temp;
+}
+static void setEncoderMode(uint32_t *val) {
+  systemSettings.settings.EncoderMode = * val;
+  RE_SetMode(&RE1_Data, systemSettings.settings.EncoderMode);
+}
+//=========================================================
 /* static void * getGuiUpd_ms() { */
 /*   temp = systemSettings.settings.guiUpdateDelay; */
 /*   return &temp; */
@@ -238,14 +238,14 @@ static void setProfile(uint32_t *val) {
   profile=*val;
 }
 //=========================================================
-/* static void * getLanguage() { */
-/*   temp = systemSettings.settings.language; */
-/*   return &temp; */
-/* } */
-/* static void setLanguage(uint32_t *val) { */
-/*   lang = *val; */
-/*   systemSettings.settings.language=*val; */
-/* } */
+static void * getLanguage() {
+  temp = systemSettings.settings.language;
+  return &temp;
+}
+static void setLanguage(uint32_t *val) {
+  lang = *val;
+  systemSettings.settings.language=*val;
+}
 //=========================================================
 static void * getButtonWakeMode() {
   temp = systemSettings.settings.buttonWakeMode;
@@ -297,13 +297,13 @@ static void system_create(screen_t *scr){
 
   //  [ Language Widget ]
   //
-  /* newComboMultiOption(w, strings[lang]._Language, &edit, NULL); */
-  /* edit->inputData.getData = &getLanguage; */
-  /* edit->big_step = 1; */
-  /* edit->step = 1; */
-  /* edit->setData = (void (*)(void *))&setLanguage; */
-  /* edit->options = Langs; */
-  /* edit->numberOfOptions = LANGUAGE_COUNT; */
+  newComboMultiOption(w, strings[lang]._Language, &edit, NULL);
+  edit->inputData.getData = &getLanguage;
+  edit->big_step = 1;
+  edit->step = 1;
+  edit->setData = (void (*)(void *))&setLanguage;
+  edit->options = Langs;
+  edit->numberOfOptions = LANGUAGE_COUNT;
 
   //  [ Profile Widget ]
   //
@@ -442,14 +442,14 @@ static void system_create(screen_t *scr){
 
   //  [ Encoder inversion Widget ]
   //
-  /* newComboMultiOption(w, strings[lang].SYSTEM_Encoder, &edit, NULL); */
-  /* dis=&edit->inputData; */
-  /* dis->getData = &getEncoderMode; */
-  /* edit->big_step = 1; */
-  /* edit->step = 1; */
-  /* edit->setData = (void (*)(void *))&setEncoderMode; */
-  /* edit->options = strings[lang].encMode; */
-  /* edit->numberOfOptions = 2; */
+  newComboMultiOption(w, strings[lang].SYSTEM_Encoder, &edit, NULL);
+  dis=&edit->inputData;
+  dis->getData = &getEncoderMode;
+  edit->big_step = 1;
+  edit->step = 1;
+  edit->setData = (void (*)(void *))&setEncoderMode;
+  edit->options = strings[lang].encMode;
+  edit->numberOfOptions = 2;
 
   //  [ Buzzer Widget ]
   //

@@ -901,7 +901,7 @@ static void main_screen_create(screen_t *scr){
 	dis = extractDisplayPartFromWidget(w);
 	edit = extractEditablePartFromWidget(w);
 	sel = extractSelectablePartFromWidget(w);
-	dis->reservedChars = 4;
+	dis->reservedChars = 5;
 	dis->font = default_font;
 	w->fcolor = C_BLUE;
 	edit->inputData.getData = &getTip;
@@ -913,6 +913,7 @@ static void main_screen_create(screen_t *scr){
 	sel->tab = 0;
 	w->posY = 0;
 	w->enabled = 0;
+	w->width = 40;
 
 
 #ifdef USE_VIN
@@ -931,7 +932,7 @@ static void main_screen_create(screen_t *scr){
 	w->posY= 0;
 	w->posX = 0;
 	edit=extractEditablePartFromWidget(w);
-	//w->width = 40;
+	w->width = 40;
 #endif
 
 #ifdef USE_NTC
