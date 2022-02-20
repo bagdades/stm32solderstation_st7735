@@ -11,7 +11,7 @@
 #include "widgets.h"
 
 #define SCREENSAVER
-#define PWR_BAR_WIDTH   60
+#define PWR_BAR_WIDTH   160
 #define SCALE_FACTOR    (int)((65536*PWR_BAR_WIDTH*1.005)/100)
 
 //-------------------------------------------------------------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 
 extern ucg_t ucg;
 
-/* static uint32_t barTime; */
+static uint32_t barTime;
 slide_t screenSaver = {
 	.x = 34,
 	.y = 0,
@@ -606,33 +606,37 @@ static void  drawMode(uint8_t refresh){
 	ucg_SetForeColor(&ucg, default_color);
 }
 
-/* static uint8_t  drawPowerBar(uint8_t refresh){ */
-/* 	static uint8_t previousPower=0; */
-/* 	uint8_t update=refresh; */
-/* 	if((current_time-barTime)>9){ */
-/* 		barTime = current_time; */
-/* 		if(previousPower!=mainScr.lastPwr){ */
-/* 			previousPower = mainScr.lastPwr; */
-/* 			update=1; */
-/* 		} */
-/* 	} */
-/* 	ucg_SetForeColor(&ucg, C_GREEN); */
-/* 	if(update){                          // Update every 10mS or if screen was erased */
-/* 		if(!refresh){                           // If screen not erased */
-/* 			ucg_SetForeColor(&ucg,C_BLACK);                               // Draw a black square to wipe old widget data */
-/* 			ucg_FillRectangle(&ucg, ucg_GetXDim(&ucg)-PWR_BAR_WIDTH-2 , ucg_GetYDim(&ucg)-7, PWR_BAR_WIDTH, 5); */
-/* 			ucg_SetForeColor(&ucg,C_GREEN); */
-/* 		} */
-/* 		else{ */
-/* 			ucg_DrawRectangle(&ucg, ucg_GetXDim(&ucg)-PWR_BAR_WIDTH-4, ucg_GetYDim(&ucg)-9, PWR_BAR_WIDTH+4, 9); */
-/* 		} */
-/* 		ucg_FillRectangle(&ucg, ucg_GetXDim(&ucg)-PWR_BAR_WIDTH-2, ucg_GetYDim(&ucg)-7, mainScr.lastPwr, 5); */
-/* 		ucg_SetForeColor(&ucg, C_CYAN); */
-/* 		return 1; */
-/* 	} */
-/* 	ucg_SetForeColor(&ucg, C_CYAN); */
-/* 	return 0; */
-/* } */
+static uint8_t  drawPowerBar(uint8_t refresh){
+	static uint8_t previousPower=0;
+	uint8_t update=refresh;
+	if((current_time-barTime)>9){
+		barTime = current_time;
+		if(previousPower!=mainScr.lastPwr){
+			previousPower = mainScr.lastPwr;
+			update=1;
+		}
+	}
+	ucg_SetForeColor(&ucg, C_RED);
+	if(update){                          // Update every 10mS or if screen was erased
+		if(!refresh){                           // If screen not erased
+			ucg_SetForeColor(&ucg,C_BLACK);                               // Draw a black square to wipe old widget data
+			/* ucg_FillRectangle(&ucg, ucg_GetXDim(&ucg)-PWR_BAR_WIDTH-2 , ucg_GetYDim(&ucg)-7, PWR_BAR_WIDTH, 5); */
+			ucg_FillRectangle(&ucg, 0, 74, ucg_GetXDim(&ucg), 5);
+			ucg_SetForeColor(&ucg,C_RED);
+			ucg_DrawRectangle(&ucg, 0, 74, ucg_GetXDim(&ucg), 5);
+		}
+		else{
+			/* ucg_DrawRectangle(&ucg, ucg_GetXDim(&ucg)-PWR_BAR_WIDTH-4, ucg_GetYDim(&ucg)-9, PWR_BAR_WIDTH+4, 9); */
+			ucg_DrawRectangle(&ucg, 0, 74, ucg_GetXDim(&ucg), 5);
+		}
+		/* ucg_FillRectangle(&ucg, ucg_GetXDim(&ucg)-PWR_BAR_WIDTH-2, ucg_GetYDim(&ucg)-7, mainScr.lastPwr, 5); */
+		ucg_FillRectangle(&ucg, 1, 75, mainScr.lastPwr, 3);
+		ucg_SetForeColor(&ucg, C_CYAN);
+		return 1;
+	}
+	ucg_SetForeColor(&ucg, C_CYAN);
+	return 0;
+}
 
 /* static uint8_t  drawPlot(uint8_t refresh){ */
 /* #define PLOT_X  0 */
@@ -811,7 +815,7 @@ static uint8_t main_screen_draw(screen_t *scr){
 	if(mainScr.ironStatus != status_error){
 		/* ret |= drawScreenSaver(refresh); */
 	}
-	/* ret |= drawPowerBar(refresh); */
+	ret |= drawPowerBar(refresh);
 	/* ret |= drawIcons(refresh); */
 	drawMode(refresh);
 	/* drawMisc(refresh); */
@@ -859,7 +863,7 @@ static void main_screen_create(screen_t *scr){
 	dis->textAlign=align_right;
 	dis->font=&font_53;
 	w->fcolor = C_GREEN;
-	w->posY = 25;
+	w->posY = 19;
 	dis->getData = &main_screen_getIronTemp;
 	w->width = 120;
 	w->enabled=0;
@@ -871,7 +875,7 @@ static void main_screen_create(screen_t *scr){
 	dis=extractDisplayPartFromWidget(w);
 	edit=extractEditablePartFromWidget(w);
 	dis->reservedChars=5;
-	w->posY = 25;
+	w->posY = 19;
 	dis->getData = &getTemp;
 	dis->dispAlign=align_disabled;
 	dis->textAlign=align_right;
@@ -881,7 +885,7 @@ static void main_screen_create(screen_t *scr){
 	w->frameType=frame_solid;
 	edit->selectable.state=widget_edit;
 	w->radius=8;
-	w->fcolor = C_YELLOW;
+	w->fcolor = C_COLOR565(0xFF, 0xAA, 0x00);
 	w->enabled=0;
 	w->width=120;
 
@@ -889,7 +893,7 @@ static void main_screen_create(screen_t *scr){
 	newWidget(&w, widget_bmp, scr);
 	((bmp_widget_t*)w->content)->xbm =  &cel;
 	w->posX = ucg_GetXDim(&ucg) - ((bmp_widget_t*)w->content)->xbm->width;
-	w->posY = ucg_GetYDim(&ucg) - ((bmp_widget_t*)w->content)->xbm->height - 2;
+	w->posY = ucg_GetYDim(&ucg) - ((bmp_widget_t*)w->content)->xbm->height - 8;
 	w->draw = &default_widgetDraw;
 	w->fcolor = C_GREEN;
 	w->bcolor = C_BLACK;
@@ -913,7 +917,7 @@ static void main_screen_create(screen_t *scr){
 	sel->tab = 0;
 	w->posY = 0;
 	w->enabled = 0;
-	w->width = 40;
+	w->width = 60;
 
 
 #ifdef USE_VIN
@@ -932,7 +936,7 @@ static void main_screen_create(screen_t *scr){
 	w->posY= 0;
 	w->posX = 0;
 	edit=extractEditablePartFromWidget(w);
-	w->width = 40;
+	w->width = 60;
 #endif
 
 #ifdef USE_NTC
