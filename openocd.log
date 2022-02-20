@@ -1,0 +1,199 @@
+Info : Unable to match requested speed 1000 kHz, using 950 kHz
+Info : Unable to match requested speed 1000 kHz, using 950 kHz
+Info : clock speed 950 kHz
+Info : STLINK v2 JTAG v32 API v2 SWIM v7 VID 0x0483 PID 0x3748
+Info : using stlink api v2
+Info : Target voltage: 4.320633
+Info : stm32f1x.cpu: hardware has 6 breakpoints, 4 watchpoints
+Info : accepting 'gdb' connection from pipe
+Info : device id = 0x20036410
+Info : flash size = 64kbytes
+undefined debug reason 7 - target needs reset
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x0800c33c msp: 0x20005000
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x2000003a msp: 0x20005000
+Warn : keep_alive() was not invoked in the 1000ms timelimit. GDB alive packet not sent! (1911). Workaround: increase "set remotetimeout" in GDB
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x0800c33c msp: 0x20005000
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x0800c33c msp: 0x20005000
+Info : halted: PC: 0x0800be3a
+Info : halted: PC: 0x0800be3c
+Info : halted: PC: 0x0800beca
+Info : halted: PC: 0x0800becc
+Info : halted: PC: 0x0800bed0
+Info : halted: PC: 0x0800bed2
+Info : halted: PC: 0x0800bed4
+Info : halted: PC: 0x0800bed6
+Info : halted: PC: 0x0800bed8
+Info : halted: PC: 0x0800beda
+Info : halted: PC: 0x0800bedc
+Info : halted: PC: 0x0800be82
+Info : halted: PC: 0x080013b4
+Info : halted: PC: 0x08005150
+Info : halted: PC: 0x08005050
+Info : halted: PC: 0x08004f24
+Info : halted: PC: 0x08004f28
+Info : halted: PC: 0x08004f2a
+Info : halted: PC: 0x08004f2c
+Info : halted: PC: 0x08004f2e
+Info : halted: PC: 0x08001d30
+Info : halted: PC: 0x08004f34
+Info : halted: PC: 0x08004f36
+Info : halted: PC: 0x08004f38
+Info : halted: PC: 0x08004f3a
+Info : halted: PC: 0x08004f3c
+Info : halted: PC: 0x0800515c
+Info : halted: PC: 0x08004f08
+Info : halted: PC: 0x08001d30
+Info : halted: PC: 0x08001d32
+Info : halted: PC: 0x08001d34
+Info : halted: PC: 0x08004f0e
+Info : halted: PC: 0x08004f10
+Info : halted: PC: 0x08004f12
+Info : halted: PC: 0x08004f14
+Info : halted: PC: 0x08004f16
+Info : halted: PC: 0x08004f18
+Info : halted: PC: 0x080051f4
+Info : halted: PC: 0x080051f8
+Info : halted: PC: 0x080051fa
+Info : halted: PC: 0x080051fc
+Info : halted: PC: 0x080051fe
+Info : halted: PC: 0x08005200
+Info : halted: PC: 0x08005202
+Info : halted: PC: 0x08005204
+Info : halted: PC: 0x08005206
+Info : halted: PC: 0x08005208
+Info : halted: PC: 0x0800520a
+Info : halted: PC: 0x0800520c
+Info : halted: PC: 0x0800520e
+Info : halted: PC: 0x08005232
+Info : halted: PC: 0x08005234
+Info : halted: PC: 0x08005236
+Info : halted: PC: 0x08005238
+Info : halted: PC: 0x0800523a
+Info : halted: PC: 0x0800523c
+Info : halted: PC: 0x08006214
+Info : halted: PC: 0x08006216
+Info : halted: PC: 0x0800621a
+Info : halted: PC: 0x0800621e
+Info : halted: PC: 0x08006220
+Info : halted: PC: 0x08006222
+Info : halted: PC: 0x08006224
+Info : halted: PC: 0x08006226
+Info : halted: PC: 0x0800622a
+Info : halted: PC: 0x0800622e
+Info : halted: PC: 0x08006230
+Info : halted: PC: 0x08006234
+Info : halted: PC: 0x08006236
+Info : halted: PC: 0x08006238
+Info : halted: PC: 0x0800623c
+Info : halted: PC: 0x0800623e
+Info : halted: PC: 0x08004b60
+Info : halted: PC: 0x08006246
+Info : halted: PC: 0x08006248
+Info : halted: PC: 0x0800624c
+Info : halted: PC: 0x08006250
+Info : halted: PC: 0x08006252
+Info : halted: PC: 0x08006256
+Info : halted: PC: 0x08006258
+Info : halted: PC: 0x0800625a
+Info : halted: PC: 0x080066a4
+Info : halted: PC: 0x080066a6
+Info : halted: PC: 0x0800523e
+Info : halted: PC: 0x08005240
+Info : halted: PC: 0x08005242
+Info : halted: PC: 0x08005230
+Info : halted: PC: 0x08005232
+Info : halted: PC: 0x08005244
+Info : halted: PC: 0x08005246
+Info : halted: PC: 0x08005248
+Info : halted: PC: 0x0800524a
+Info : halted: PC: 0x08004f1a
+Info : halted: PC: 0x08004f42
+Info : halted: PC: 0x0800515a
+Info : halted: PC: 0x080013b8
+Info : halted: PC: 0x080013b0
+Info : halted: PC: 0x0800be08
+Info : halted: PC: 0x08005150
+Info : halted: PC: 0x08005050
+Info : halted: PC: 0x08004f24
+Info : halted: PC: 0x08004f28
+Info : halted: PC: 0x08004f2a
+Info : halted: PC: 0x08004f2c
+Info : halted: PC: 0x08004f2e
+Info : halted: PC: 0x08001d30
+Info : halted: PC: 0x08004f34
+Info : halted: PC: 0x08004f36
+Info : halted: PC: 0x08004f38
+Info : halted: PC: 0x08004f3a
+Info : halted: PC: 0x08004f3c
+Info : halted: PC: 0x0800515c
+Info : halted: PC: 0x08004f08
+Info : halted: PC: 0x08001d30
+Info : halted: PC: 0x08004f10
+Info : halted: PC: 0x08004f12
+Info : halted: PC: 0x08004f14
+Info : halted: PC: 0x08004f16
+Info : halted: PC: 0x08004f18
+Info : halted: PC: 0x080051f4
+Info : halted: PC: 0x080051f8
+Info : halted: PC: 0x080051fa
+Info : halted: PC: 0x080051fc
+Info : halted: PC: 0x080051fe
+Info : halted: PC: 0x08005200
+Info : halted: PC: 0x08005202
+Info : halted: PC: 0x08005204
+Info : halted: PC: 0x08005206
+Info : halted: PC: 0x08005208
+Info : halted: PC: 0x0800520a
+Info : halted: PC: 0x0800520c
+Info : halted: PC: 0x0800520e
+Info : halted: PC: 0x08005232
+Info : halted: PC: 0x08005234
+Info : halted: PC: 0x08005236
+Info : halted: PC: 0x08005238
+Info : halted: PC: 0x0800523a
+Info : halted: PC: 0x0800523c
+Info : halted: PC: 0x08006214
+Info : halted: PC: 0x08006216
+Info : halted: PC: 0x0800621a
+Info : halted: PC: 0x0800621e
+Info : halted: PC: 0x08006220
+Info : halted: PC: 0x08006222
+Info : halted: PC: 0x08006224
+Info : halted: PC: 0x08006226
+Info : halted: PC: 0x0800622a
+Info : halted: PC: 0x0800622e
+Info : halted: PC: 0x08006230
+Info : halted: PC: 0x08006234
+Info : halted: PC: 0x08006236
+Info : halted: PC: 0x08006238
+Info : halted: PC: 0x0800623c
+Info : halted: PC: 0x0800623e
+Info : halted: PC: 0x08004b60
+Info : halted: PC: 0x08006246
+Info : halted: PC: 0x08006248
+Info : halted: PC: 0x0800624c
+Info : halted: PC: 0x08006250
+Info : halted: PC: 0x08006252
+Info : halted: PC: 0x08006256
+Info : halted: PC: 0x08006258
+Info : halted: PC: 0x0800625a
+Info : halted: PC: 0x080066a4
+Info : halted: PC: 0x080066a6
+Info : halted: PC: 0x0800523e
+Info : halted: PC: 0x08005240
+Info : halted: PC: 0x08005242
+Info : halted: PC: 0x08005230
+Info : halted: PC: 0x08005232
+Info : halted: PC: 0x08005244
+Info : halted: PC: 0x08005246
+Info : halted: PC: 0x08005248
+Info : halted: PC: 0x0800524a
+Info : halted: PC: 0x08004f1a
+Info : halted: PC: 0x08004f42
+Info : halted: PC: 0x0800515a
+Info : halted: PC: 0x080013b8
+Info : dropped 'gdb' connection
