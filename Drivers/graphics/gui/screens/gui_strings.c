@@ -14,7 +14,7 @@ const strings_t strings[LANGUAGE_COUNT] = {
       .boot_firstBoot = "First Boot!",
       .boot_Profile = "Profile",
 
-      .main_error_noIron_Detected = "NO IRON DETECTED",
+      .main_error_noIron_Detected = "NO IRON\nDETECTED",
       .main_error_failsafe = "FAILSAFE MODE",
       .main_error_NTC_high = "NTC READ HIGH",
       .main_error_NTC_low = "NTC READ LOW",

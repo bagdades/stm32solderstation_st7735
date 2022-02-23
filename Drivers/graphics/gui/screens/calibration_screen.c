@@ -295,9 +295,9 @@ static void Cal_Start_init(screen_t *scr) {
 static int Cal_Start_ProcessInput(struct screen_t *scr, RE_Rotation_t input, RE_State_t *s) {
 	update = update_GUI_Timer();
 	update_draw |= update;
-	wakeOledDim();
-	handleOledDim();
-	updatePlot();
+	/* wakeOledDim(); */
+	/* handleOledDim(); */
+	/* updatePlot(); */
 	updateScreenTimer(input);
 
 	if(current_state>=cal_finished){
@@ -353,18 +353,22 @@ static void Cal_Start_OnExit(screen_t *scr) {
 static uint8_t Cal_Start_draw(screen_t *scr){
 	char str[20];
 	uint8_t width;
+	static uint8_t last_state = 0;
 
 	if(update_draw){
 		update_draw=0;
-
-		/* ucg_SetForeColor(&ucg, C_BLACK); */
-		/* ucg_FillScreen(&ucg); */
+		if(last_state != current_state) {
+			last_state = current_state;
+			ucg_SetForeColor(&ucg, C_BLACK);
+			ucg_FillScreen(&ucg);
+		}
 		scr->refresh=screen_Erased;
 		ucg_SetForeColor(&ucg, default_color);
 		ucg_SetFont(&ucg, default_font);
 
 		if(current_state<cal_finished){
 			uint8_t s = current_state;
+			ucg_SetBackColor(&ucg, C_BLACK);
 			ucg_WriteString(&ucg, 0, 60, systemSettings.Profile.tip[systemSettings.Profile.currentTip].name);  // Draw current tip name
 			ucg_WriteString(&ucg, 0, 6, strings[lang].CAL_Step);            // Draw current cal state
 
@@ -393,8 +397,8 @@ static uint8_t Cal_Start_draw(screen_t *scr){
 		}
 		else if(current_state==cal_needsAdjust){
 			ucg_WriteString(&ucg, 0, 0, strings[lang].CAL_DELTA_HIGH_1);
-			ucg_WriteString(&ucg, 0, 15, strings[lang].CAL_DELTA_HIGH_2);
-			ucg_WriteString(&ucg, 0, 30, strings[lang].CAL_DELTA_HIGH_3);
+			ucg_WriteString(&ucg, 0, 21, strings[lang].CAL_DELTA_HIGH_2);
+			ucg_WriteString(&ucg, 0, 42, strings[lang].CAL_DELTA_HIGH_3);
 		}
 	}
 	return (default_screenDraw(scr));
@@ -428,8 +432,9 @@ static void Cal_Start_create(screen_t *scr) {
 	edit->selectable.tab = 1;
 	edit->big_step=5;
 	edit->step=1;
-	w->posX = 82;
-	w->posY = 22;
+	w->posX = 102;
+	/* w->posX = 82; */
+	w->posY = 24;
 	w->width = 42;
 	w->enabled=0;
 }

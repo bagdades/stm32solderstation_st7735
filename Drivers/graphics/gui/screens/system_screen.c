@@ -113,22 +113,22 @@ static void setGuiTempDenoise(uint32_t *val) {
   systemSettings.settings.guiTempDenoise = *val;
 }
 //=========================================================
-static void * getContrast_() {
-  temp = systemSettings.settings.contrast/25;
-  return &temp;
-}
-static void setContrast_(uint32_t *val) {
-  if(*val==0){
-    systemSettings.settings.contrast=5;
-  }
-  else if(*val==10){
-    systemSettings.settings.contrast=255;
-  }
-  else{
-    systemSettings.settings.contrast=*val*25;
-  }
-  /* setContrast(systemSettings.settings.contrast); */
-}
+/* static void * getContrast_() { */
+/*   temp = systemSettings.settings.contrast/25; */
+/*   return &temp; */
+/* } */
+/* static void setContrast_(uint32_t *val) { */
+/*   if(*val==0){ */
+/*     systemSettings.settings.contrast=5; */
+/*   } */
+/*   else if(*val==10){ */
+/*     systemSettings.settings.contrast=255; */
+/*   } */
+/*   else{ */
+/*     systemSettings.settings.contrast=*val*25; */
+/*   } */
+/*   #<{(| setContrast(systemSettings.settings.contrast); |)}># */
+/* } */
 //=========================================================
 /* static void * getOledOffset() { */
 /*   temp = systemSettings.settings.OledOffset; */
@@ -238,14 +238,14 @@ static void setProfile(uint32_t *val) {
   profile=*val;
 }
 //=========================================================
-static void * getLanguage() {
-  temp = systemSettings.settings.language;
-  return &temp;
-}
-static void setLanguage(uint32_t *val) {
-  lang = *val;
-  systemSettings.settings.language=*val;
-}
+/* static void * getLanguage() { */
+/*   temp = systemSettings.settings.language; */
+/*   return &temp; */
+/* } */
+/* static void setLanguage(uint32_t *val) { */
+/*   lang = *val; */
+/*   systemSettings.settings.language=*val; */
+/* } */
 //=========================================================
 static void * getButtonWakeMode() {
   temp = systemSettings.settings.buttonWakeMode;
@@ -297,13 +297,13 @@ static void system_create(screen_t *scr){
 
   //  [ Language Widget ]
   //
-  newComboMultiOption(w, strings[lang]._Language, &edit, NULL);
-  edit->inputData.getData = &getLanguage;
-  edit->big_step = 1;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setLanguage;
-  edit->options = Langs;
-  edit->numberOfOptions = LANGUAGE_COUNT;
+  /* newComboMultiOption(w, strings[lang]._Language, &edit, NULL); */
+  /* edit->inputData.getData = &getLanguage; */
+  /* edit->big_step = 1; */
+  /* edit->step = 1; */
+  /* edit->setData = (void (*)(void *))&setLanguage; */
+  /* edit->options = Langs; */
+  /* edit->numberOfOptions = LANGUAGE_COUNT; */
 
   //  [ Profile Widget ]
   //
@@ -317,15 +317,15 @@ static void system_create(screen_t *scr){
 
   //  [ Contrast Widget ]
   //
-  newComboEditable(w, strings[lang].SYSTEM_Oled_Contrast, &edit, NULL);
-  dis=&edit->inputData;
-  dis->reservedChars=3;
-  dis->getData = &getContrast_;
-  edit->big_step = 1;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setContrast_;
-  edit->max_value = 10;
-  edit->min_value = 0;
+  /* newComboEditable(w, strings[lang].SYSTEM_Oled_Contrast, &edit, NULL); */
+  /* dis=&edit->inputData; */
+  /* dis->reservedChars=3; */
+  /* dis->getData = &getContrast_; */
+  /* edit->big_step = 1; */
+  /* edit->step = 1; */
+  /* edit->setData = (void (*)(void *))&setContrast_; */
+  /* edit->max_value = 10; */
+  /* edit->min_value = 0; */
 
   //  [ Oled Offset Widget ]
   //

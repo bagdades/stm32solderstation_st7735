@@ -66,6 +66,7 @@ Drivers/generalIO/tempsensors.c \
 Drivers/generalIO/voltagesensors.c \
 Drivers/graphics/st7735.c \
 Drivers/graphics/fonts/cel.c \
+Drivers/graphics/fonts/far.c \
 Drivers/graphics/fonts/font18m.c \
 Drivers/graphics/fonts/font53.c \
 Drivers/graphics/fonts/logo.c \

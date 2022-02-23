@@ -31,6 +31,7 @@ extern const tFont font_18b;
 extern const tFont font_18m;
 extern const tFont font_53;
 extern const tImage cel;
+extern const tImage far;
 extern const tImage logo;
 
 #endif // __FONTS_H__

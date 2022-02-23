@@ -121,6 +121,7 @@ void Init(void){
 	ucg.x_dim = ST7735_WIDTH;
 	ucg.y_dim = ST7735_HEIGHT;
 	ucg_Init();
+	ucg_SetFont(&ucg, &font_18m);
 	guiInit();
 	ADC_Init(&ADC_DEVICE);
 	buzzer_init();
@@ -189,7 +190,7 @@ int main(void)
 	}
 
 	Init();
-	ucg_SetForeColor(&ucg, C_BLACK);
+	ucg_SetForeColor(&ucg, C_RED);
 	ucg_FillScreen(&ucg);
 	ucg_SetForeColor(&ucg, C_CYAN);
 

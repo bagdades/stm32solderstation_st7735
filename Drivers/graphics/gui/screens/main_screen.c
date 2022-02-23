@@ -724,10 +724,12 @@ static uint8_t  drawError(uint8_t refresh){
 			if(x_mark_state){
 				ucg_SetForeColor(&ucg, C_BLACK);
 				/* ucg_FillRectangle(&ucg, xp+iron[0]+5, (ucg_GetYDim(&ucg)-x_mark[1])/2, x_mark[0], x_mark[1]); */
-				/* ucg_FillRectangle(&ucg, 0, 25, 160, 53); */
+				ucg_FillRectangle(&ucg, 0, 19, 160, 53);
 				ucg_SetForeColor(&ucg, default_color);
 			}
 			else{
+				ucg_SetForeColor(&ucg, C_RED);
+				ucg_WriteString(&ucg, 0, 25, strings[lang].main_error_noIron_Detected);
 				/* u8g2_DrawXBM(&u8g2, xp+iron[0]+5, (OledHeight-x_mark[1])/2, x_mark[0], x_mark[1], &x_mark[2]); */
 			}
 		}
@@ -745,6 +747,8 @@ static uint8_t  drawError(uint8_t refresh){
 		}
 		ucg_SetFont(&ucg, &font_18m);
 		ucg_SetForeColor(&ucg, C_RED);
+		/* widgetDisable(Widget_IronTemp); */
+		/* widgetDisable(Widget_SetPoint); */
 		if(Iron.Error.V_low){
 			ucg_WriteString(&ucg, 0, Err_ypos, strings[lang].main_error_VoltageLow);
 			Err_ypos+=25;
@@ -767,6 +771,8 @@ static uint8_t  drawError(uint8_t refresh){
 		}
 		return 1;
 	}
+	/* widgetEnable(Widget_IronTemp); */
+	/* widgetEnable(Widget_SetPoint); */
 	return 0;
 }
 
@@ -803,6 +809,10 @@ static uint8_t main_screen_draw(screen_t *scr){
 		lastState=currentState;
 		refresh=1;
 	}
+if(systemSettings.settings.tempUnit == mode_Celsius)
+		((bmp_widget_t*)Widget_CLabel->content)->xbm =  &cel;
+	else ((bmp_widget_t*)Widget_CLabel->content)->xbm =  &far;
+
 	if(refresh){
 		scr->refresh=screen_Erased;
 		//TODO
@@ -862,6 +872,8 @@ static void main_screen_create(screen_t *scr){
 	dis->dispAlign=align_disabled;
 	dis->textAlign=align_right;
 	dis->font=&font_53;
+	dis->type = field_temp;
+	/* dis->type = field_uint16; */
 	w->fcolor = C_GREEN;
 	w->posY = 19;
 	dis->getData = &main_screen_getIronTemp;
@@ -907,6 +919,7 @@ static void main_screen_create(screen_t *scr){
 	sel = extractSelectablePartFromWidget(w);
 	dis->reservedChars = 5;
 	dis->font = default_font;
+	dis->textAlign = align_left;
 	w->fcolor = C_BLUE;
 	edit->inputData.getData = &getTip;
 	edit->numberOfOptions = systemSettings.Profile.currentNumberOfTips;

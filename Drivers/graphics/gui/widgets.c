@@ -10,6 +10,7 @@
 #include "oled.h"
 #include "gui.h"
 #include "st7735.h"
+#include <stdio.h>
 
 extern ucg_t ucg;
 
@@ -671,8 +672,12 @@ uint8_t default_widgetDraw(widget_t *w) {
 				strcat(dis->displayString, dis->endString);                           // Append endString
 			}
 			dis->displayString[dis->reservedChars]=0;                               // Ensure last string char is 0
+		}else if(dis && dis->type == field_temp) {
+			int16_t val_three = *(int16_t*)dis->getData();
+			snprintf(dis->displayString, dis->reservedChars + 1, "%03d", (int16_t)val_three);
+			dis->displayString[dis->reservedChars] = 0;
+			dis->stringStart = w->posX;
 		}
-
 		widgetAlign(w);        // Align
 		widgetClearField(w);        // Clear old field
 		if(w->refresh==refresh_triggered){
@@ -1158,7 +1163,7 @@ uint8_t comboBoxDraw(widget_t *w) {
 					dis->displayString[dis->reservedChars]=0;                           // Ensure last string char is 0
 					len=ucg_GetStrWidth(&ucg, ucg_GetFont(&ucg), dis->displayString);
 				}
-				else if(dis->type==field_string){
+								else if(dis->type==field_string){
 					strncpy(displayString,(char*)dis->getData(),dis->reservedChars+1);
 					len=ucg_GetStrWidth(&ucg, ucg_GetFont(&ucg), displayString);
 				}
