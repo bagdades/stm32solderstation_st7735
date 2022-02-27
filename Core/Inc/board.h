@@ -9,6 +9,8 @@
     BOARD PROFILE FOR KSGER v3.x
 */
 
+#define FLASH128
+
 #define HWSTRING "HW: KSGER v3.x"
 
 /********************************

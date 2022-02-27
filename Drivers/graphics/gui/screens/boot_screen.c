@@ -9,7 +9,12 @@
 #include "screen_common.h"
 #include "st7735.h"
 #include "fonts.h"
+
+#ifdef FLASH128
+#define SPLASH_TIMEOUT 2000
+#else
 #define SPLASH_TIMEOUT 100
+#endif
 
 
 //-------------------------------------------------------------------------------------------------------------------------------
@@ -134,7 +139,9 @@ void boot_screen_init(screen_t * scr){
 		systemSettings.setupMode=enable;
 	}
 	/* ucg_SetForeColor(&ucg, C_CYAN); */
-	/* ucg_DrawBmp(0, 0, &logo, C_WHITE, C_BLACK); */
+#ifdef FLASH128
+	ucg_DrawBmp(0, 0, &logo, C_WHITE, C_BLACK);
+#endif
 	scr->refresh = screen_Erased;
 	wakeOledDim();
 }

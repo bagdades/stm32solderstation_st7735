@@ -196,14 +196,16 @@ static void setEncoderMode(uint32_t *val) {
   systemSettings.settings.EncoderMode = * val;
   RE_SetMode(&RE1_Data, systemSettings.settings.EncoderMode);
 }
+#ifdef FLASH128
 //=========================================================
-/* static void * getGuiUpd_ms() { */
-/*   temp = systemSettings.settings.guiUpdateDelay; */
-/*   return &temp; */
-/* } */
-/* static void setGuiUpd_ms(uint32_t *val) { */
-/*   systemSettings.settings.guiUpdateDelay = *val; */
-/* } */
+static void * getGuiUpd_ms() {
+  temp = systemSettings.settings.guiUpdateDelay;
+  return &temp;
+}
+static void setGuiUpd_ms(uint32_t *val) {
+  systemSettings.settings.guiUpdateDelay = *val;
+}
+#endif
 //=========================================================
 static void * getLVP() {
   temp = systemSettings.settings.lvp;
@@ -539,16 +541,18 @@ static void system_create(screen_t *scr){
 
   //  [ Gui refresh rate Widget ]
   //
-  /* newComboEditable(w, strings[lang].SYSTEM_Gui_Time, &edit, NULL); */
-  /* dis=&edit->inputData; */
-  /* dis->endString="ms"; */
-  /* dis->reservedChars=5; */
-  /* dis->getData = &getGuiUpd_ms; */
-  /* edit->big_step = 20; */
-  /* edit->step = 10; */
-  /* edit->setData = (void (*)(void *))&setGuiUpd_ms; */
-  /* edit->max_value = 250; */
-  /* edit->min_value = 20; */
+#ifdef FLASH128
+  newComboEditable(w, strings[lang].SYSTEM_Gui_Time, &edit, NULL);
+  dis=&edit->inputData;
+  dis->endString="ms";
+  dis->reservedChars=5;
+  dis->getData = &getGuiUpd_ms;
+  edit->big_step = 20;
+  edit->step = 10;
+  edit->setData = (void (*)(void *))&setGuiUpd_ms;
+  edit->max_value = 250;
+  edit->min_value = 20;
+#endif
 
 #ifdef ENABLE_DEBUG_SCREEN
   //  [ Debug enable Widget ]

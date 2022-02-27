@@ -190,9 +190,12 @@ int main(void)
 	}
 
 	Init();
-	ucg_SetForeColor(&ucg, C_RED);
+
+#ifndef  FLASH128
+	ucg_SetForeColor(&ucg, C_BLACK);
 	ucg_FillScreen(&ucg);
 	ucg_SetForeColor(&ucg, C_CYAN);
+#endif   
 
 #ifdef RUN_MY_TEST
 	myTest();

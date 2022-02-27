@@ -518,11 +518,11 @@ void ucg_DrawRectangle(ucg_t* ucg, uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
 /*     ucg->color[idx] = color; */
 /* } */
 
-void ucg_SetBackColor(ucg_t* ucg, uint16_t color) {
+inline void ucg_SetBackColor(ucg_t* ucg, uint16_t color) {
     ucg->backcolor = color;
 }
 
-void ucg_SetForeColor(ucg_t* ucg, uint16_t color) {
+inline void ucg_SetForeColor(ucg_t* ucg, uint16_t color) {
     ucg->forecolor = color;
 }
 
@@ -538,7 +538,7 @@ uint16_t ucg_GetForeColor(ucg_t* ucg) {
     return color;
 }
 
-void ucg_SetFont(ucg_t* ucg, const tFont* font) {
+inline void ucg_SetFont(ucg_t* ucg, const tFont* font) {
     ucg->font = font;
 }
 
@@ -732,11 +732,11 @@ void ucg_DrawImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint16_
     ST7735_Unselect();
 }
 
-uint16_t ucg_GetYDim(ucg_t *ucg) {
+inline uint16_t ucg_GetYDim(ucg_t *ucg) {
     return ucg->y_dim;
 }
 
-uint16_t ucg_GetXDim(ucg_t *ucg) {
+inline uint16_t ucg_GetXDim(ucg_t *ucg) {
     return ucg->x_dim;
 }
 

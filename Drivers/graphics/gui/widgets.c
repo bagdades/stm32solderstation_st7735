@@ -1075,9 +1075,9 @@ uint8_t comboBoxDraw(widget_t *w) {
 	}
 	if(w->parent->refresh < screen_Erase){        // If screen not erased already
 		w->parent->refresh = screen_Erased;
-		ucg_SetForeColor(&ucg, C_BLACK);
-		ucg_FillScreen(&ucg);// Erase fast using dma
-		ucg_SetForeColor(&ucg, default_color);
+		/* ucg_SetForeColor(&ucg, C_BLACK); */
+		/* ucg_FillScreen(&ucg);// Erase fast using dma */
+		/* ucg_SetForeColor(&ucg, default_color); */
 	}
 	if(ucg_GetFont(&ucg) != combo->font){
 		ucg_SetFont(&ucg, combo->font);
@@ -1104,7 +1104,9 @@ uint8_t comboBoxDraw(widget_t *w) {
 		if(item == combo->currentItem) {                                  // If the current combo item is selected
 			frameY=y * height + w->posY;
 		}
-
+		ucg_SetForeColor(&ucg, C_BLACK);
+		ucg_FillRectangle(&ucg, 0, y * height + w->posY, ucg_GetXDim(&ucg), height);
+		ucg_SetForeColor(&ucg, default_color);
 		if ((item->type==combo_Screen)||(item->type==combo_Action)){      // If screen or action item, just draw the label
 			ucg_SetForeColor(&ucg, default_color);
 			ucg_SetBackColor(&ucg, C_BLACK);
