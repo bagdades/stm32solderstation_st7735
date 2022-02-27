@@ -678,6 +678,7 @@ uint8_t default_widgetDraw(widget_t *w) {
 			dis->displayString[dis->reservedChars] = 0;
 			dis->stringStart = w->posX;
 		}
+
 		widgetAlign(w);        // Align
 		widgetClearField(w);        // Clear old field
 		if(w->refresh==refresh_triggered){

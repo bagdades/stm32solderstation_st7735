@@ -609,6 +609,7 @@ static void  drawMode(uint8_t refresh){
 static uint8_t  drawPowerBar(uint8_t refresh){
 	static uint8_t previousPower=0;
 	uint8_t update=refresh;
+	uint8_t lastPwr;
 	if((current_time-barTime)>9){
 		barTime = current_time;
 		if(previousPower!=mainScr.lastPwr){
@@ -618,23 +619,27 @@ static uint8_t  drawPowerBar(uint8_t refresh){
 	}
 	ucg_SetForeColor(&ucg, C_RED);
 	if(update){                          // Update every 10mS or if screen was erased
-		if(!refresh){                           // If screen not erased
-			ucg_SetForeColor(&ucg,C_BLACK);                               // Draw a black square to wipe old widget data
-			/* ucg_FillRectangle(&ucg, ucg_GetXDim(&ucg)-PWR_BAR_WIDTH-2 , ucg_GetYDim(&ucg)-7, PWR_BAR_WIDTH, 5); */
-			ucg_FillRectangle(&ucg, 0, 74, ucg_GetXDim(&ucg), 5);
-			ucg_SetForeColor(&ucg,C_RED);
-			ucg_DrawRectangle(&ucg, 0, 74, ucg_GetXDim(&ucg), 5);
-		}
-		else{
-			/* ucg_DrawRectangle(&ucg, ucg_GetXDim(&ucg)-PWR_BAR_WIDTH-4, ucg_GetYDim(&ucg)-9, PWR_BAR_WIDTH+4, 9); */
-			ucg_DrawRectangle(&ucg, 0, 74, ucg_GetXDim(&ucg), 5);
-		}
+		/* if(!refresh){                           // If screen not erased */
+		/* 	ucg_SetForeColor(&ucg,C_WHITE);                               // Draw a black square to wipe old widget data */
+		/* 	#<{(| ucg_FillRectangle(&ucg, ucg_GetXDim(&ucg)-PWR_BAR_WIDTH-2 , ucg_GetYDim(&ucg)-7, PWR_BAR_WIDTH, 5); |)}># */
+		/* 	ucg_FillRectangle(&ucg, 0, 74, ucg_GetXDim(&ucg), 5); */
+		/* 	ucg_SetForeColor(&ucg,C_RED); */
+		/* 	ucg_DrawRectangle(&ucg, 0, 74, ucg_GetXDim(&ucg), 5); */
+		/* } */
+		/* else{ */
+		/* 	#<{(| ucg_DrawRectangle(&ucg, ucg_GetXDim(&ucg)-PWR_BAR_WIDTH-4, ucg_GetYDim(&ucg)-9, PWR_BAR_WIDTH+4, 9); |)}># */
+		/* 	ucg_DrawRectangle(&ucg, 0, 74, ucg_GetXDim(&ucg), 5); */
+		/* } */
 		/* ucg_FillRectangle(&ucg, ucg_GetXDim(&ucg)-PWR_BAR_WIDTH-2, ucg_GetYDim(&ucg)-7, mainScr.lastPwr, 5); */
-		ucg_FillRectangle(&ucg, 1, 75, mainScr.lastPwr, 3);
-		ucg_SetForeColor(&ucg, C_CYAN);
+		lastPwr = mainScr.lastPwr;
+		ucg_SetForeColor(&ucg, C_RED);
+		ucg_FillRectangle(&ucg, 0, 74, lastPwr, 5);
+		ucg_SetForeColor(&ucg, C_WHITE);
+		ucg_FillRectangle(&ucg, lastPwr, 74, ucg_GetXDim(&ucg) - lastPwr, 5);
+		ucg_SetForeColor(&ucg, default_color);
 		return 1;
 	}
-	ucg_SetForeColor(&ucg, C_CYAN);
+	ucg_SetForeColor(&ucg, default_color);
 	return 0;
 }
 

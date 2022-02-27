@@ -93,8 +93,8 @@ extern SPI_HandleTypeDef ST7735_SPI_PORT;
 #define ST7735_IS_160X128 1
 #define ST7735_WIDTH  160
 #define ST7735_HEIGHT 128
-#define ST7735_XSTART 1
-#define ST7735_YSTART 2
+#define ST7735_XSTART 0
+#define ST7735_YSTART 0
 #define ST7735_ROTATION (ST7735_MADCTL_MX | ST7735_MADCTL_MV | ST7735_MADCTL_RGB)
 */
 
@@ -163,6 +163,21 @@ extern SPI_HandleTypeDef ST7735_SPI_PORT;
 #define ST7735_WIDTH  160
 #define ST7735_HEIGHT 80
 #define ST7735_ROTATION (ST7735_MADCTL_MX | ST7735_MADCTL_MV | ST7735_MADCTL_BGR)
+
+// #define ST7735S_IS_160X80 1
+// #define ST7735_XSTART 0
+// #define ST7735_YSTART 24
+// #define ST7735_WIDTH  160
+// #define ST7735_HEIGHT 80
+// #define ST7735_ROTATION (ST7735_MADCTL_MX | ST7735_MADCTL_MV | ST7735_MADCTL_BGR)
+
+// mini 160x80, rotate left
+// #define ST7735_IS_160X80 1
+// #define ST7735_XSTART 1
+// #define ST7735_YSTART 26
+// #define ST7735_WIDTH  160
+// #define ST7735_HEIGHT 80
+// #define ST7735_ROTATION (ST7735_MADCTL_MX | ST7735_MADCTL_MV | ST7735_MADCTL_BGR)
 
 // mini 160x80, rotate right 
 /*
@@ -236,13 +251,10 @@ extern SPI_HandleTypeDef ST7735_SPI_PORT;
 // typedef struct _ucg_t ucg_t;
 typedef struct ucg_t
 {
-    //display width
     uint16_t x_dim;
-    //display height
     uint16_t y_dim;
     uint16_t backcolor;
     uint16_t forecolor;
-    // FontDef* font;
     const tFont* font;
 }ucg_t;
 

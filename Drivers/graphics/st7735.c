@@ -73,6 +73,17 @@ static const uint8_t
     ST7735_INVON, 0 },        //  3: Invert colors
 #endif
 
+#ifdef ST7735S_IS_160X80
+  init_cmds2[] = {            // Init for 7735S, part 2 (160x80 display)
+    2,                        //  2 commands in list:
+    ST7735_CASET  , 4      ,  //  1: Column addr set, 4 args, no delay:
+      0x00, 0x00,             //     XSTART = 0
+      0x00, 0x4F,             //     XEND = 79
+    ST7735_RASET  , 4      ,  //  2: Row addr set, 4 args, no delay:
+      0x00, 0x00,             //     XSTART = 0
+      0x00, 0x9F },            //     XEND = 159
+#endif
+
   init_cmds3[] = {            // Init for 7735R, part 3 (red or green tab)
     4,                        //  4 commands in list:
     ST7735_GMCTRP1, 16      , //  1: Magical unicorn dust, 16 args, no delay:
