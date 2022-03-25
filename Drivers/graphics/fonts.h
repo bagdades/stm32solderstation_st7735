@@ -30,6 +30,7 @@ typedef struct {
 extern const tFont font_18b;
 extern const tFont font_18m;
 extern const tFont font_53;
+extern const tFont font_32;
 extern const tImage cel;
 extern const tImage far;
 extern const tImage logo;

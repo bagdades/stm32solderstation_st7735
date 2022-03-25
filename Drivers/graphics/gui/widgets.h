@@ -19,7 +19,7 @@ extern uint16_t default_color;
 //#define COMBO_SLIDE_TEXT                                                    // Testing feature, not enabled by default
 
 typedef enum widgetStateType {widget_idle, widget_selected, widget_edit, widget_error}widgetStateType;
-typedef enum widgetFieldType {field_temp, field_int32, field_bmp, field_string}widgetFieldType;
+typedef enum widgetFieldType {field_temp, field_int32, field_bmp, field_string, field_time, field_date, field_splash}widgetFieldType;
 typedef enum AlignType { align_disabled, align_left, align_center, align_right }AlignType;
 typedef enum widgetFrameType {frame_auto, frame_solid, frame_outline, frame_disabled, frame_combo}widgetFrameType;
 typedef enum widgetType {widget_combo, widget_label, widget_display, widget_editable, widget_bmp, widget_multi_option, widget_button, widget_bmp_button}widgetType;

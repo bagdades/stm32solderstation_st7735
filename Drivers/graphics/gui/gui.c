@@ -9,6 +9,7 @@
 #include "screens.h"
 #include "oled.h"
 #include "gui.h"
+#include "splash_screen.h"
 
 
 void guiInit(void) {
@@ -39,7 +40,9 @@ void guiInit(void) {
 
   oled_addScreen(&Screen_calibration,screen_calibration);
   calibration_screen_setup(&Screen_calibration);
-
+  
+  oled_addScreen(&Screen_splash, screen_splash);
+  splash_screen_setup(&Screen_splash);
 #ifdef ENABLE_DEBUG_SCREEN
 
   oled_addScreen(&Screen_debug,screen_debug);

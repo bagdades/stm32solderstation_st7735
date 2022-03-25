@@ -317,7 +317,7 @@ void default_widgetUpdate(widget_t *w) {
 				return;
 			}
 			if(dis->type == field_string){
-				val_ui=strsum(dis->getData());                          // Get string sum
+				val_ui=strsum(dis->displayString);                          // Get string sum
 				break;
 			}
 			else{
@@ -473,7 +473,7 @@ void widgetAlign(widget_t* w){
 		case widget_display:
 		case widget_editable:
 			if(dis->type == field_string){
-				strWidth = ucg_GetStrWidth(&ucg, ucg_GetFont(&ucg), dis->getData());
+				strWidth = ucg_GetStrWidth(&ucg, ucg_GetFont(&ucg), dis->displayString);
 			}
 			else{
 				strWidth = ucg_GetStrWidth(&ucg, ucg_GetFont(&ucg), displayString);
@@ -704,7 +704,7 @@ uint8_t default_widgetDraw(widget_t *w) {
 			case widget_display:
 				if(dis->type == field_string){
 					ucg_SetForeColor(&ucg, w->fcolor);
-					ucg_WriteString(&ucg, dis->stringStart, w->posY,  dis->getData());
+					ucg_WriteString(&ucg, dis->stringStart, w->posY,  dis->displayString);
 				}
 				else{
 					ucg_SetForeColor(&ucg, w->fcolor);
@@ -1166,7 +1166,7 @@ uint8_t comboBoxDraw(widget_t *w) {
 					dis->displayString[dis->reservedChars]=0;                           // Ensure last string char is 0
 					len=ucg_GetStrWidth(&ucg, ucg_GetFont(&ucg), dis->displayString);
 				}
-								else if(dis->type==field_string){
+				else if(dis->type==field_string || dis->type == field_time || dis->type == field_date){
 					strncpy(displayString,(char*)dis->getData(),dis->reservedChars+1);
 					len=ucg_GetStrWidth(&ucg, ucg_GetFont(&ucg), displayString);
 				}
@@ -1190,6 +1190,25 @@ uint8_t comboBoxDraw(widget_t *w) {
 					/* ucg_FillRectangle(&ucg, dis->stringStart+start, posY+1, width+1, height-2); */
 					ucg_SetBackColor(&ucg, w->fcolor);
 					ucg_WriteString(&ucg,dis->stringStart, posY+2, displayString);
+				}
+				else if((dis->type == field_time || dis->type == field_date) && (sel->state == widget_edit)) {
+					char str[sizeof(displayString)+1];
+					uint8_t start,width;
+					strcpy(str,displayString);
+					str[edit->current_edit+2]=0;
+					width=ucg_GetStrWidth(&ucg, ucg_GetFont(&ucg), str);
+					str[edit->current_edit]=0;
+					start=ucg_GetStrWidth(&ucg, ucg_GetFont(&ucg), str);
+					width-=start;
+
+					ucg_SetForeColor(&ucg, C_BLACK);
+					ucg_FillRectangle(&ucg, dis->stringStart+start, posY, width, height-2);
+					ucg_SetBackColor(&ucg, w->fcolor);
+					ucg_WriteString(&ucg,dis->stringStart, posY+2, displayString);
+					/* ug_SetMode(&ug, LCD_MODE_NORM); */
+					/* ug_FillRectangle(&ug, dis->stringStart+start, posY, width, 2); */
+					/* ug_SetMode(&ug, LCD_MODE_INVERSE); */
+					/* ug_DrawString(&ug,dis->stringStart, posY+1, displayString); */
 				}
 				else{
 					ucg_WriteString(&ucg,dis->stringStart, posY+2, dis->displayString);
@@ -1343,6 +1362,8 @@ int default_widgetProcessInput(widget_t *w, RE_Rotation_t input, RE_State_t *sta
 					strcpy(dis->displayString, (char*)edit->inputData.getData());
 					edit->current_edit = 0;
 				}
+				if(dis->type == field_date)
+					edit->current_edit = 6;
 				sel->state = widget_edit;
 				sel->previous_state = widget_selected;
 				break;
@@ -1357,6 +1378,31 @@ int default_widgetProcessInput(widget_t *w, RE_Rotation_t input, RE_State_t *sta
 						sel->state = widget_selected;
 						sel->previous_state = widget_edit;
 						edit->current_edit = 0;
+					}
+				}
+				else if(dis->type == field_time) {
+					edit->current_edit += 3;
+					if(edit->current_edit== 9){
+						sel->state = widget_selected;
+						sel->previous_state = widget_edit;
+						edit->current_edit = 0;
+					}
+				}
+				else if(dis->type == field_date) {
+					switch (edit->current_edit) {
+						case 6:
+							edit->current_edit = 3;
+							break;
+						case 3:
+							edit->current_edit = 0;
+							break;
+						case 0:
+							edit->current_edit = 6;
+							sel->state = widget_selected;
+							sel->previous_state = widget_edit;
+							break;
+						default:
+							break;
 					}
 				}
 				else {
@@ -1452,6 +1498,102 @@ int default_widgetProcessInput(widget_t *w, RE_Rotation_t input, RE_State_t *sta
 			}
 			dis->displayString[edit->current_edit]=(char)current_edit;
 			edit->setData(dis->displayString);
+		}
+		else if(dis->type == field_time) {
+			if(input == Rotate_Decrement_while_click ||input == Rotate_Increment_while_click){
+				if(input == Rotate_Decrement_while_click){
+					switch (edit->current_edit) {
+						case 6:
+							edit->current_edit = 3;
+							break;
+						case 3:
+							edit->current_edit = 0;
+							break;
+						case 0:
+							edit->current_edit = 6;
+							break;
+					}
+				}
+				else{
+					switch (edit->current_edit) {
+						case 0:
+							edit->current_edit = 3;
+							break;
+						case 3:
+							edit->current_edit = 6;
+							break;
+						case 6:
+							edit->current_edit = 0;
+							break;
+					}
+				}
+				return -1;
+			}
+			switch (edit->current_edit) {
+				case 0:
+					sTime.Hours += inc;
+					if(sTime.Hours >= 24)
+						sTime.Hours = 0;
+					if(sTime.Hours == 0 && inc < 0)
+						sTime.Hours = 23;
+					break;
+				case 3:
+					sTime.Minutes += inc;
+					if(sTime.Minutes >= 60)
+						sTime.Minutes = 0;
+					if(sTime.Minutes == 0 && inc < 0)
+						sTime.Minutes = 59;
+					break;
+				case 6:
+					sTime.Seconds = 0;
+					break;
+			}
+			edit->setData(&sTime);
+		}
+		else if(dis->type == field_date) {
+			if(input == Rotate_Decrement_while_click ||input == Rotate_Increment_while_click){
+				if(input == Rotate_Decrement_while_click){
+					switch (edit->current_edit) {
+						case 6:
+							edit->current_edit = 3;
+							break;
+						case 3:
+							edit->current_edit = 0;
+							break;
+						case 0:
+							edit->current_edit = 6;
+							break;
+					}
+				}
+				else{
+					switch (edit->current_edit) {
+						case 0:
+							edit->current_edit = 3;
+							break;
+						case 3:
+							edit->current_edit = 6;
+							break;
+						case 6:
+							edit->current_edit = 0;
+							break;
+					}
+				}
+				return -1;
+			}
+			switch (edit->current_edit) {
+				case 0:
+					sDate.Date += inc;
+					break;
+				case 3:
+					sDate.Month += inc;
+					break;
+				case 6:
+					sDate.Year += inc;
+					if(sDate.Year == 0 &&  inc < 0)
+						sDate.Year = 1;
+					break;
+			}
+			edit->setData(&sDate);
 		}
 		else if(dis->type==field_int32){
 			if(!dis->displayString){                            // If empty

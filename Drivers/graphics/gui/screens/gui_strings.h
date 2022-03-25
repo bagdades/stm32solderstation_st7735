@@ -58,6 +58,8 @@ typedef struct{
   char * FILTER__Min;
   char * FILTER_Reset_limit;
 
+  char * SYSTEM_Time;
+  char * SYSTEM_Date;
   char * SYSTEM_Profile;
   char * SYSTEM_Oled_Offset;
   char * SYSTEM_Oled_Contrast;

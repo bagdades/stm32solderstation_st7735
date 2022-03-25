@@ -21,6 +21,7 @@
 #include "reset_screen.h"
 #include "calibration_screen.h"
 #include "debug_screen.h"
+#include "splash_screen.h"
 
 #include "oled.h"
 #include "gui.h"

@@ -12,6 +12,7 @@
 #define FLASH128
 
 #define HWSTRING "HW: KSGER v3.x"
+// #define HWSTRING "HW: KSGER v3.x"
 
 /********************************
  *       Display Settings    *

@@ -19,6 +19,7 @@
 //-------------------------------------------------------------------------------------------------------------------------------
 
 extern ucg_t ucg;
+uint32_t screen_saver_time = 1;
 
 static uint32_t barTime;
 slide_t screenSaver = {
@@ -519,6 +520,9 @@ int main_screenProcessInput(screen_t * scr, RE_Rotation_t input, RE_State_t *sta
 	if(switchScreenMode()){
 		return -1;
 	}
+	
+	if(checkScreenTimer(screen_saver_time * 60000) && Iron.CurrentMode == mode_sleep && systemSettings.settings.screenSaverMode)
+		return screen_splash;
 
 	return default_screenProcessInput(scr, input, state);
 }
@@ -888,7 +892,7 @@ static void main_screen_create(screen_t *scr){
 	//  [ Iron Setpoint Widget ]
 	//
 	newWidget(&w,widget_editable,scr);
-	Widget_SetPoint=w;
+	Widget_SetPoint = w;
 	dis=extractDisplayPartFromWidget(w);
 	edit=extractEditablePartFromWidget(w);
 	dis->reservedChars=5;

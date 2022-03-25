@@ -39,6 +39,7 @@ enum {
               screen_calibration_settings,
               screen_calibration_input,
           screen_debug,
+		  screen_splash,
     };
 
 typedef struct screen_t screen_t;

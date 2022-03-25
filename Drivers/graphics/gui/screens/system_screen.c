@@ -8,6 +8,8 @@
 #include "system_screen.h"
 #include "screen_common.h"
 #include "tempsensors.h"
+#include "m_rtc.h"
+#include "widgets.h"
 
 screen_t Screen_system;
 screen_t Screen_system_ntc;
@@ -26,6 +28,36 @@ static comboBox_item_t *comboitem_system_BootMode;
 static editable_widget_t *editable_system_TempStep;
 static editable_widget_t *editable_system_bigTempStep;
 static editable_widget_t *editable_system_GuiTempDenoise;
+extern uint32_t screen_saver_time;
+
+static void *getSceenSavTime() {
+	temp = screen_saver_time;
+	return &temp;
+}
+
+static void setSceenSavTime(uint32_t *val) {
+	screen_saver_time = *val;
+}
+
+static void *getDate() {
+	mRTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+	snprintf(showDate, 11, "%02d.%02d.%02d", sDate.Date, sDate.Month, sDate.Year);
+	return showDate;
+}
+
+static void setDate(RTC_DateTypeDef *date) {
+	mRTC_SetDate(&hrtc, date, RTC_FORMAT_BIN);
+}
+
+static void *getTime() {
+	mRTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+	snprintf(showTime, 9, "%02d:%02d:%02d", sTime.Hours, sTime.Minutes, sTime.Seconds);
+	return showTime;
+}
+
+static void setTime(RTC_TimeTypeDef *time) {
+	mRTC_SetTime(&hrtc, time, RTC_FORMAT_BIN);
+}
 
 void update_System_menu(void){
   bool mode = (systemSettings.settings.dim_mode>dim_off);
@@ -198,13 +230,13 @@ static void setEncoderMode(uint32_t *val) {
 }
 #ifdef FLASH128
 //=========================================================
-static void * getGuiUpd_ms() {
-  temp = systemSettings.settings.guiUpdateDelay;
-  return &temp;
-}
-static void setGuiUpd_ms(uint32_t *val) {
-  systemSettings.settings.guiUpdateDelay = *val;
-}
+/* static void * getGuiUpd_ms() { */
+/*   temp = systemSettings.settings.guiUpdateDelay; */
+/*   return &temp; */
+/* } */
+/* static void setGuiUpd_ms(uint32_t *val) { */
+/*   systemSettings.settings.guiUpdateDelay = *val; */
+/* } */
 #endif
 //=========================================================
 static void * getLVP() {
@@ -221,6 +253,14 @@ static void * getbuzzerMode() {
 }
 static void setbuzzerMode(uint32_t *val) {
   systemSettings.settings.buzzerMode = *val;
+}
+//=========================================================
+static void * getScreenSavMode() {
+  temp = systemSettings.settings.screenSaverMode;
+  return &temp;
+}
+static void setScreenSavMode(uint32_t *val) {
+  systemSettings.settings.screenSaverMode = *val;
 }
 //=========================================================
 static void * getInitMode() {
@@ -287,293 +327,341 @@ static void system_onExit(screen_t *scr){
 }
 
 static void system_create(screen_t *scr){
-  widget_t* w;
-  displayOnly_widget_t* dis;
-  editable_widget_t* edit;
+	widget_t* w;
+	displayOnly_widget_t* dis;
+	editable_widget_t* edit;
 
-  current_lang = lang;
+	current_lang = lang;
 
-  //  [ SYSTEM COMBO ]
-  //
-  newWidget(&w,widget_combo,scr);
+	//  [ SYSTEM COMBO ]
+	//
+	newWidget(&w,widget_combo,scr);
 
-  //  [ Language Widget ]
-  //
-  /* newComboMultiOption(w, strings[lang]._Language, &edit, NULL); */
-  /* edit->inputData.getData = &getLanguage; */
-  /* edit->big_step = 1; */
-  /* edit->step = 1; */
-  /* edit->setData = (void (*)(void *))&setLanguage; */
-  /* edit->options = Langs; */
-  /* edit->numberOfOptions = LANGUAGE_COUNT; */
+	//  [ Language Widget ]
+	//
+	/* newComboMultiOption(w, strings[lang]._Language, &edit, NULL); */
+	/* edit->inputData.getData = &getLanguage; */
+	/* edit->big_step = 1; */
+	/* edit->step = 1; */
+	/* edit->setData = (void (*)(void *))&setLanguage; */
+	/* edit->options = Langs; */
+	/* edit->numberOfOptions = LANGUAGE_COUNT; */
 
-  //  [ Profile Widget ]
-  //
-  newComboMultiOption(w, strings[lang].SYSTEM_Profile, &edit, NULL);
-  edit->inputData.getData = &getProfile;
-  edit->big_step = 1;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setProfile;
-  edit->options = profileStr;
-  edit->numberOfOptions = ProfileSize;
+	// [Time Widget]
+	newWidget(&w, widget_combo, scr);
+	newComboEditable(w, "Time", &edit, NULL);
+	w->posY = 9;
+	dis = &edit->inputData;
+	dis->reservedChars = 8;
+	dis->type = field_time;
+	dis->getData = &getTime;
+	edit->big_step = 1;
+	edit->step = 1;
+	edit->selectable.tab = 0;
+	edit->setData = (void (*)(void *)) & setTime;
 
-  //  [ Contrast Widget ]
-  //
-  /* newComboEditable(w, strings[lang].SYSTEM_Oled_Contrast, &edit, NULL); */
-  /* dis=&edit->inputData; */
-  /* dis->reservedChars=3; */
-  /* dis->getData = &getContrast_; */
-  /* edit->big_step = 1; */
-  /* edit->step = 1; */
-  /* edit->setData = (void (*)(void *))&setContrast_; */
-  /* edit->max_value = 10; */
-  /* edit->min_value = 0; */
+	//[Date Widget]
+	newComboEditable(w, "Date", &edit, NULL);
+	dis = &edit->inputData;
+	dis->reservedChars = 11;
+	dis->type = field_date;
+	dis->getData = &getDate;
+	edit->big_step = 1;
+	edit->step = 1;
+	edit->selectable.tab = 0;
+	edit->setData = (void (*)(void *)) & setDate;
 
-  //  [ Oled Offset Widget ]
-  //
-  /* newComboEditable(w, strings[lang].SYSTEM_Oled_Offset, &edit, NULL); */
-  /* dis=&edit->inputData; */
-  /* dis->reservedChars=2; */
-  /* dis->getData = &getOledOffset; */
-  /* edit->big_step = 1; */
-  /* edit->step = 1; */
-  /* edit->setData = (void (*)(void *))&setOledOffset; */
-  /* edit->max_value = 15; */
-  /* edit->min_value = 0; */
+	//[Screen Saver]
+	newComboMultiOption(w, "ScreenSav", &edit, NULL);
+	dis = &edit->inputData;
+	dis->getData = &getScreenSavMode;
+	edit->big_step = 1;
+	edit->step = 1;
+	edit->setData = (void (*)(void*))&setScreenSavMode;
+	edit->options = strings[lang].OffOn;
+	edit->numberOfOptions = 2;
 
-  //  [ Oled dimming Widget ]
-  //
-  /* newComboMultiOption(w, strings[lang].SYSTEM_Oled_Dim, &edit, NULL); */
-  /* dis=&edit->inputData; */
-  /* dis->getData = &getdimMode; */
-  /* edit->big_step = 1; */
-  /* edit->step = 1; */
-  /* edit->setData = (void (*)(void *))&setdimMode; */
-  /* edit->options = strings[lang].dimMode; */
-  /* edit->numberOfOptions = 3; */
+	//[Screen Saver Time]
+	newComboEditable(w, "Timeout", &edit, NULL);
+	dis = &edit->inputData;
+	dis->reservedChars = 5;
+	dis->endString = "min";
+	dis->getData = &getSceenSavTime;
+	edit->big_step = 1;
+	edit->step = 1;
+	edit->setData = (void (*)(void *)) & setSceenSavTime;
+	edit->max_value = 10;
+	edit->min_value = 1;
 
-  //  [ Oled dim delay Widget ]
-  //
-  /* newComboEditable(w, strings[lang].__Delay, &edit, &comboitem_system_Dim_Timeout); */
-  /* dis=&edit->inputData; */
-  /* dis->reservedChars=4; */
-  /* dis->endString="s"; */
-  /* dis->getData = &getDimTimeout; */
-  /* edit->big_step = 10; */
-  /* edit->step = 5; */
-  /* edit->setData = (void (*)(void *))&setDimTimeout; */
-  /* edit->max_value = 600; */
-  /* edit->min_value = 5; */
-  /*  */
-  /* //  [ Oled dim turn off Widget ] */
-  /* // */
-  /* newComboMultiOption(w, strings[lang].SYSTEM_Oled_Dim_inSleep, &edit, &comboitem_system_Dim_PowerOff); */
-  /* dis=&edit->inputData; */
-  /* dis->getData = &getDimTurnOff; */
-  /* edit->big_step = 1; */
-  /* edit->step = 1; */
-  /* edit->setData = (void (*)(void *))&setDimTurnOff; */
-  /* edit->options = strings[lang].OffOn; */
-  /* edit->numberOfOptions = 2; */
+	//  [ Profile Widget ]
+	//
+	newComboMultiOption(w, strings[lang].SYSTEM_Profile, &edit, NULL);
+	edit->inputData.getData = &getProfile;
+	edit->big_step = 1;
+	edit->step = 1;
+	edit->setData = (void (*)(void *))&setProfile;
+	edit->options = profileStr;
+	edit->numberOfOptions = ProfileSize;
 
-  //  [ Wake mode Widget ]
-  //
-  newComboMultiOption(w, strings[lang].SYSTEM_Wake_Mode, &edit, NULL);
-  dis=&edit->inputData;
-  dis->getData = &getWakeMode;
-  edit->big_step = 1;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setWakeMode;
-  edit->options = strings[lang].wakeMode;
-  edit->numberOfOptions = 2;
+	//  [ Contrast Widget ]
+	//
+	/* newComboEditable(w, strings[lang].SYSTEM_Oled_Contrast, &edit, NULL); */
+	/* dis=&edit->inputData; */
+	/* dis->reservedChars=3; */
+	/* dis->getData = &getContrast_; */
+	/* edit->big_step = 1; */
+	/* edit->step = 1; */
+	/* edit->setData = (void (*)(void *))&setContrast_; */
+	/* edit->max_value = 10; */
+	/* edit->min_value = 0; */
 
-  //  [ Shake filtering Widget ]
-  //
-  newComboMultiOption(w, strings[lang].SYSTEM_Shake_Filtering, &edit, &comboitem_system_ShakeFiltering);
-  dis=&edit->inputData;
-  dis->getData = &getShakeFiltering;
-  edit->big_step = 1;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setShakeFiltering;
-  edit->options = strings[lang].OffOn;
-  edit->numberOfOptions = 2;
+	//  [ Oled Offset Widget ]
+	//
+	/* newComboEditable(w, strings[lang].SYSTEM_Oled_Offset, &edit, NULL); */
+	/* dis=&edit->inputData; */
+	/* dis->reservedChars=2; */
+	/* dis->getData = &getOledOffset; */
+	/* edit->big_step = 1; */
+	/* edit->step = 1; */
+	/* edit->setData = (void (*)(void *))&setOledOffset; */
+	/* edit->max_value = 15; */
+	/* edit->min_value = 0; */
 
-  //  [ Stand mode Widget ]
-  //
-  newComboMultiOption(w, strings[lang].SYSTEM_Stand_Mode, &edit, &comboitem_system_StandMode);
-  dis=&edit->inputData;
-  dis->getData = &getStandMode;
-  edit->big_step = 1;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setStandMode;
-  edit->options = strings[lang].InitMode;
-  edit->numberOfOptions = 2;
+	//  [ Oled dimming Widget ]
+	//
+	/* newComboMultiOption(w, strings[lang].SYSTEM_Oled_Dim, &edit, NULL); */
+	/* dis=&edit->inputData; */
+	/* dis->getData = &getdimMode; */
+	/* edit->big_step = 1; */
+	/* edit->step = 1; */
+	/* edit->setData = (void (*)(void *))&setdimMode; */
+	/* edit->options = strings[lang].dimMode; */
+	/* edit->numberOfOptions = 3; */
 
-  //  [ Boot mode Widget ]
-  //
-  newComboMultiOption(w, strings[lang].SYSTEM_Boot, &edit, &comboitem_system_BootMode);
-  dis=&edit->inputData;
-  dis->getData = &getInitMode;
-  edit->big_step = 1;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setInitMode;
-  edit->options = strings[lang].InitMode;
-  edit->numberOfOptions = 3;
+	//  [ Oled dim delay Widget ]
+	//
+	/* newComboEditable(w, strings[lang].__Delay, &edit, &comboitem_system_Dim_Timeout); */
+	/* dis=&edit->inputData; */
+	/* dis->reservedChars=4; */
+	/* dis->endString="s"; */
+	/* dis->getData = &getDimTimeout; */
+	/* edit->big_step = 10; */
+	/* edit->step = 5; */
+	/* edit->setData = (void (*)(void *))&setDimTimeout; */
+	/* edit->max_value = 600; */
+	/* edit->min_value = 5; */
+	/*  */
+	/* //  [ Oled dim turn off Widget ] */
+	/* // */
+	/* newComboMultiOption(w, strings[lang].SYSTEM_Oled_Dim_inSleep, &edit, &comboitem_system_Dim_PowerOff); */
+	/* dis=&edit->inputData; */
+	/* dis->getData = &getDimTurnOff; */
+	/* edit->big_step = 1; */
+	/* edit->step = 1; */
+	/* edit->setData = (void (*)(void *))&setDimTurnOff; */
+	/* edit->options = strings[lang].OffOn; */
+	/* edit->numberOfOptions = 2; */
 
-  //  [ Encoder wake mode  Widget ]
-  //
-  newComboMultiOption(w, strings[lang].SYSTEM_Button_Wake, &edit,&comboitem_system_ButtonWakeMode);
-  dis=&edit->inputData;
-  dis->getData = &getButtonWakeMode;
-  edit->big_step = 1;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setButtonWakeMode;
-  edit->options = strings[lang].WakeModes;
-  edit->numberOfOptions = 4;
+	//  [ Wake mode Widget ]
+	//
+	newComboMultiOption(w, strings[lang].SYSTEM_Wake_Mode, &edit, NULL);
+	dis=&edit->inputData;
+	dis->getData = &getWakeMode;
+	edit->big_step = 1;
+	edit->step = 1;
+	edit->setData = (void (*)(void *))&setWakeMode;
+	edit->options = strings[lang].wakeMode;
+	edit->numberOfOptions = 2;
 
-  //  [ Shake wake mode Widget ]
-  //
-  newComboMultiOption(w, strings[lang].SYSTEM_Shake_Wake, &edit,&comboitem_system_ShakeWakeMode);
-  dis=&edit->inputData;
-  dis->getData = &getShakeWakeMode;
-  edit->big_step = 1;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setShakeWakeMode;
-  edit->options = strings[lang].WakeModes;
-  edit->numberOfOptions = 4;
+	//  [ Shake filtering Widget ]
+	//
+	newComboMultiOption(w, strings[lang].SYSTEM_Shake_Filtering, &edit, &comboitem_system_ShakeFiltering);
+	dis=&edit->inputData;
+	dis->getData = &getShakeFiltering;
+	edit->big_step = 1;
+	edit->step = 1;
+	edit->setData = (void (*)(void *))&setShakeFiltering;
+	edit->options = strings[lang].OffOn;
+	edit->numberOfOptions = 2;
 
-  //  [ Encoder inversion Widget ]
-  //
-  newComboMultiOption(w, strings[lang].SYSTEM_Encoder, &edit, NULL);
-  dis=&edit->inputData;
-  dis->getData = &getEncoderMode;
-  edit->big_step = 1;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setEncoderMode;
-  edit->options = strings[lang].encMode;
-  edit->numberOfOptions = 2;
+	//  [ Stand mode Widget ]
+	//
+	newComboMultiOption(w, strings[lang].SYSTEM_Stand_Mode, &edit, &comboitem_system_StandMode);
+	dis=&edit->inputData;
+	dis->getData = &getStandMode;
+	edit->big_step = 1;
+	edit->step = 1;
+	edit->setData = (void (*)(void *))&setStandMode;
+	edit->options = strings[lang].InitMode;
+	edit->numberOfOptions = 2;
 
-  //  [ Buzzer Widget ]
-  //
-  newComboMultiOption(w, strings[lang].SYSTEM_Buzzer, &edit, NULL);
-  dis=&edit->inputData;
-  dis->getData = &getbuzzerMode;
-  edit->big_step = 1;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setbuzzerMode;
-  edit->options = strings[lang].OffOn;
-  edit->numberOfOptions = 2;
+	//  [ Boot mode Widget ]
+	//
+	newComboMultiOption(w, strings[lang].SYSTEM_Boot, &edit, &comboitem_system_BootMode);
+	dis=&edit->inputData;
+	dis->getData = &getInitMode;
+	edit->big_step = 1;
+	edit->step = 1;
+	edit->setData = (void (*)(void *))&setInitMode;
+	edit->options = strings[lang].InitMode;
+	edit->numberOfOptions = 3;
 
-  //  [ Temp display unit Widget ]
-  //
-  newComboMultiOption(w, strings[lang].SYSTEM_Temperature, &edit, NULL);
-  dis=&edit->inputData;
-  dis->getData = &getTmpUnit;
-  edit->big_step = 1;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setTmpUnit;
-  edit->options = tempUnit;
-  edit->numberOfOptions = 2;
+	//  [ Encoder wake mode  Widget ]
+	//
+	newComboMultiOption(w, strings[lang].SYSTEM_Button_Wake, &edit,&comboitem_system_ButtonWakeMode);
+	dis=&edit->inputData;
+	dis->getData = &getButtonWakeMode;
+	edit->big_step = 1;
+	edit->step = 1;
+	edit->setData = (void (*)(void *))&setButtonWakeMode;
+	edit->options = strings[lang].WakeModes;
+	edit->numberOfOptions = 4;
 
-  //  [ Temp step Widget ]
-  //
-  newComboEditable(w, strings[lang].SYSTEM__Step, &edit, NULL);
-  editable_system_TempStep=edit;
-  dis=&edit->inputData;
-  dis->reservedChars=2;
-  dis->getData = &getTmpStep;
-  edit->big_step = 5;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setTmpStep;
-  edit->max_value = 50;
-  edit->min_value = 1;
-  
-  // [ Temp big step Widget ]
-  //
-  newComboEditable(w, strings[lang].SYSTEM__Big_Step, &edit, NULL);
-  editable_system_bigTempStep=edit;
-  dis=&edit->inputData;
-  dis->reservedChars=2;
-  dis->getData = &getBigTmpStep;
-  edit->big_step = 5;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setBigTmpStep;
-  edit->max_value = 50;
-  edit->min_value = 1;
+	//  [ Shake wake mode Widget ]
+	//
+	newComboMultiOption(w, strings[lang].SYSTEM_Shake_Wake, &edit,&comboitem_system_ShakeWakeMode);
+	dis=&edit->inputData;
+	dis->getData = &getShakeWakeMode;
+	edit->big_step = 1;
+	edit->step = 1;
+	edit->setData = (void (*)(void *))&setShakeWakeMode;
+	edit->options = strings[lang].WakeModes;
+	edit->numberOfOptions = 4;
 
-  // [ De-noise threshold Widget ]
-  //
-  newComboEditable(w, strings[lang].FILTER__Threshold, &edit, NULL);
-  editable_system_GuiTempDenoise=edit;
-  dis=&edit->inputData;
-  dis->reservedChars=2;
-  dis->getData = &getGuiTempDenoise;
-  edit->big_step = 5;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setGuiTempDenoise;
-  edit->max_value = 50;
-  edit->min_value = 0;
+	//  [ Encoder inversion Widget ]
+	//
+	newComboMultiOption(w, strings[lang].SYSTEM_Encoder, &edit, NULL);
+	dis=&edit->inputData;
+	dis->getData = &getEncoderMode;
+	edit->big_step = 1;
+	edit->step = 1;
+	edit->setData = (void (*)(void *))&setEncoderMode;
+	edit->options = strings[lang].encMode;
+	edit->numberOfOptions = 2;
 
-  //  [ Active detection Widget ]
-  //
-  newComboMultiOption(w, strings[lang].SYSTEM_Active_Detection,&edit, NULL);
-  dis=&edit->inputData;
-  dis->getData = &getActiveDetection;
-  edit->big_step = 1;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setActiveDetection;
-  edit->options = strings[lang].OffOn;
-  edit->numberOfOptions = 2;
+	//  [ Buzzer Widget ]
+	//
+	newComboMultiOption(w, strings[lang].SYSTEM_Buzzer, &edit, NULL);
+	dis=&edit->inputData;
+	dis->getData = &getbuzzerMode;
+	edit->big_step = 1;
+	edit->step = 1;
+	edit->setData = (void (*)(void *))&setbuzzerMode;
+	edit->options = strings[lang].OffOn;
+	edit->numberOfOptions = 2;
 
-  //  [ Low voltage protection Widget ]
-  //
-  newComboEditable(w, strings[lang].SYSTEM_LVP, &edit, NULL);
-  dis=&edit->inputData;
-  dis->endString="V";
-  dis->reservedChars=5;
-  dis->getData = &getLVP;
-  dis->number_of_dec = 1;
-  edit->big_step = 5;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setLVP;
-  edit->max_value = 250;
-  edit->min_value = 90;
+	//  [ Temp display unit Widget ]
+	//
+	newComboMultiOption(w, strings[lang].SYSTEM_Temperature, &edit, NULL);
+	dis=&edit->inputData;
+	dis->getData = &getTmpUnit;
+	edit->big_step = 1;
+	edit->step = 1;
+	edit->setData = (void (*)(void *))&setTmpUnit;
+	edit->options = tempUnit;
+	edit->numberOfOptions = 2;
 
-  //  [ Gui refresh rate Widget ]
-  //
+	//  [ Temp step Widget ]
+	//
+	newComboEditable(w, strings[lang].SYSTEM__Step, &edit, NULL);
+	editable_system_TempStep=edit;
+	dis=&edit->inputData;
+	dis->reservedChars=2;
+	dis->getData = &getTmpStep;
+	edit->big_step = 5;
+	edit->step = 1;
+	edit->setData = (void (*)(void *))&setTmpStep;
+	edit->max_value = 50;
+	edit->min_value = 1;
+
+	// [ Temp big step Widget ]
+	//
+	newComboEditable(w, strings[lang].SYSTEM__Big_Step, &edit, NULL);
+	editable_system_bigTempStep=edit;
+	dis=&edit->inputData;
+	dis->reservedChars=2;
+	dis->getData = &getBigTmpStep;
+	edit->big_step = 5;
+	edit->step = 1;
+	edit->setData = (void (*)(void *))&setBigTmpStep;
+	edit->max_value = 50;
+	edit->min_value = 1;
+
+	// [ De-noise threshold Widget ]
+	//
+	newComboEditable(w, strings[lang].FILTER__Threshold, &edit, NULL);
+	editable_system_GuiTempDenoise=edit;
+	dis=&edit->inputData;
+	dis->reservedChars=2;
+	dis->getData = &getGuiTempDenoise;
+	edit->big_step = 5;
+	edit->step = 1;
+	edit->setData = (void (*)(void *))&setGuiTempDenoise;
+	edit->max_value = 50;
+	edit->min_value = 0;
+
+	//  [ Active detection Widget ]
+	//
+	newComboMultiOption(w, strings[lang].SYSTEM_Active_Detection,&edit, NULL);
+	dis=&edit->inputData;
+	dis->getData = &getActiveDetection;
+	edit->big_step = 1;
+	edit->step = 1;
+	edit->setData = (void (*)(void *))&setActiveDetection;
+	edit->options = strings[lang].OffOn;
+	edit->numberOfOptions = 2;
+
+	//  [ Low voltage protection Widget ]
+	//
+	newComboEditable(w, strings[lang].SYSTEM_LVP, &edit, NULL);
+	dis=&edit->inputData;
+	dis->endString="V";
+	dis->reservedChars=5;
+	dis->getData = &getLVP;
+	dis->number_of_dec = 1;
+	edit->big_step = 5;
+	edit->step = 1;
+	edit->setData = (void (*)(void *))&setLVP;
+	edit->max_value = 250;
+	edit->min_value = 90;
+
+	//  [ Gui refresh rate Widget ]
+	//
 #ifdef FLASH128
-  newComboEditable(w, strings[lang].SYSTEM_Gui_Time, &edit, NULL);
-  dis=&edit->inputData;
-  dis->endString="ms";
-  dis->reservedChars=5;
-  dis->getData = &getGuiUpd_ms;
-  edit->big_step = 20;
-  edit->step = 10;
-  edit->setData = (void (*)(void *))&setGuiUpd_ms;
-  edit->max_value = 250;
-  edit->min_value = 20;
+	/* newComboEditable(w, strings[lang].SYSTEM_Gui_Time, &edit, NULL); */
+	/* dis=&edit->inputData; */
+	/* dis->endString="ms"; */
+	/* dis->reservedChars=5; */
+	/* dis->getData = &getGuiUpd_ms; */
+	/* edit->big_step = 20; */
+	/* edit->step = 10; */
+	/* edit->setData = (void (*)(void *))&setGuiUpd_ms; */
+	/* edit->max_value = 250; */
+	/* edit->min_value = 20; */
 #endif
 
 #ifdef ENABLE_DEBUG_SCREEN
-  //  [ Debug enable Widget ]
-  //
-  newComboMultiOption(w, strings[lang].SYSTEM_DEBUG, &edit, NULL);
-  dis=&edit->inputData;
-  dis->getData = &getDbgScr;
-  dis->reservedChars=3;
-  edit->big_step = 1;
-  edit->step = 1;
-  edit->setData = (void (*)(void *))&setDbgScr;
-  edit->options = strings[lang].OffOn;
-  edit->numberOfOptions = 2;
+	//  [ Debug enable Widget ]
+	//
+	newComboMultiOption(w, strings[lang].SYSTEM_DEBUG, &edit, NULL);
+	dis=&edit->inputData;
+	dis->getData = &getDbgScr;
+	dis->reservedChars=3;
+	edit->big_step = 1;
+	edit->step = 1;
+	edit->setData = (void (*)(void *))&setDbgScr;
+	edit->options = strings[lang].OffOn;
+	edit->numberOfOptions = 2;
 #endif
-  newComboScreen(w, strings[lang].SYSTEM_RESET_MENU, screen_reset, NULL);
-  /* newComboScreen(w, SWSTRING, -1, NULL); */
-  /* newComboAction(w, HWSTRING, &hwAction, NULL); */
-  newComboScreen(w, strings[lang]._BACK, screen_settings, NULL);
+#ifdef FLASH128
+	/* newComboScreen(w, SWSTRING, -1, NULL); */
+	newComboAction(w, HWSTRING, &hwAction, NULL);
+#endif
+	newComboScreen(w, strings[lang].SYSTEM_RESET_MENU, screen_reset, NULL);
+	newComboScreen(w, strings[lang]._BACK, screen_settings, NULL);
 
-  updateTemperatureUnit();
-  update_System_menu();
+	updateTemperatureUnit();
+	update_System_menu();
 }
 
 int system_ProcessInput(screen_t * scr, RE_Rotation_t input, RE_State_t *state){

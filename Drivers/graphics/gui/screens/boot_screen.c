@@ -140,7 +140,11 @@ void boot_screen_init(screen_t * scr){
 	}
 	/* ucg_SetForeColor(&ucg, C_CYAN); */
 #ifdef FLASH128
-	ucg_DrawBmp(0, 0, &logo, C_WHITE, C_BLACK);
+	ucg_SetForeColor(&ucg, C_COLOR565(0x3E, 0xB2, 0xFF));
+	ucg_FillRectangle(&ucg, 0, 0, ucg_GetXDim(&ucg), ucg_GetYDim(&ucg) / 2);
+	ucg_SetForeColor(&ucg, C_YELLOW);
+	ucg_FillRectangle(&ucg, 0, ucg_GetYDim(&ucg) / 2, ucg_GetXDim(&ucg), ucg_GetYDim(&ucg) / 2);
+	/* ucg_DrawBmp(0, 0, &logo, C_WHITE, C_BLACK); */
 #endif
 	scr->refresh = screen_Erased;
 	wakeOledDim();

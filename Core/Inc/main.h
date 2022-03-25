@@ -47,6 +47,11 @@ extern "C" {
 /* USER CODE BEGIN ET */
 // extern IWDG_HandleTypeDef hiwdg;
 extern CRC_HandleTypeDef hcrc;
+extern RTC_HandleTypeDef hrtc;
+extern RTC_TimeTypeDef sTime;
+extern RTC_DateTypeDef sDate;
+extern char showTime[10];
+extern char showDate[12];
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

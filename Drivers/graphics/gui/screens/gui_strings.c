@@ -57,6 +57,8 @@ const strings_t strings[LANGUAGE_COUNT] = {
       .FILTER__Min = "Min",
       .FILTER_Reset_limit = "Reset lmt",
 
+	  .SYSTEM_Time = "Time",
+	  .SYSTEM_Date = "Date",
       .SYSTEM_Profile = "Profile",
       .SYSTEM_Oled_Contrast = "Contrast",
       .SYSTEM_Oled_Dim = "Dimmer",

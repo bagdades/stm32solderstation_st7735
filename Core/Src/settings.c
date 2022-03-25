@@ -39,6 +39,7 @@ const settings_t defaultSettings = {
 	.currentProfile     = profile_None,
 	.initMode           = mode_run,
 	.buzzerMode         = disable,
+	.screenSaverMode 	= disable,
 	.buttonWakeMode     = wake_all,
 	.shakeWakeMode      = wake_all,
 	.shakeFiltering     = disable,

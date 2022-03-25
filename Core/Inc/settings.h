@@ -12,7 +12,7 @@
 #include "pid.h"
 #include "board.h"
 
-#define SWSTRING          "SW: "__DATE__                            // Software version reported in settings screen
+#define SWSTRING          "SW: "__TIME__//__DATE__                            // Software version reported in settings screen
 #define SETTINGS_VERSION  15                                        // Change this if you change the settings/profile struct to prevent getting out of sync
 #define LANGUAGE_COUNT    1                                         // Number of languages
 #define ProfileSize       3                                         // Number of profiles
@@ -206,6 +206,7 @@ __attribute__((aligned(4))) typedef struct{
   uint16_t      guiUpdateDelay;
   uint32_t      dim_Timeout;
   uint32_t      version;            // Used to track if a reset is needed on firmware upgrade
+  uint8_t 		screenSaverMode;
 }settings_t;
 
 __attribute__((aligned(4))) typedef struct{
