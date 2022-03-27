@@ -39,10 +39,8 @@ uint8_t mRTC_GetSecond(RTC_HandleTypeDef* hrtc, uint32_t Format)
 	{
 		Error_Handler();
 	}
-
 	/* Check the parameters */
 	assert_param(IS_RTC_FORMAT(Format));
-
 	/* Check the input parameters format */
 	if(Format != RTC_FORMAT_BIN)
 	{
@@ -62,10 +60,8 @@ uint8_t mRTC_GetMinute(RTC_HandleTypeDef* hrtc, uint32_t Format)
 	{
 		Error_Handler();
 	}
-
 	/* Check the parameters */
 	assert_param(IS_RTC_FORMAT(Format));
-
 	/* Check the input parameters format */
 	if(Format != RTC_FORMAT_BIN)
 	{
@@ -85,10 +81,8 @@ uint8_t mRTC_GetHour(RTC_HandleTypeDef* hrtc, uint32_t Format)
 	{
 		Error_Handler();
 	}
-
 	/* Check the parameters */
 	assert_param(IS_RTC_FORMAT(Format));
-
 	/* Check the input parameters format */
 	if(Format != RTC_FORMAT_BIN)
 	{
@@ -108,7 +102,6 @@ uint8_t	mRTC_GetWeekDay(RTC_HandleTypeDef* hrtc)
 	{
 		Error_Handler();
 	}
-
 	return hrtc->DateToUpdate.WeekDay;
 }
 
@@ -142,10 +135,8 @@ uint8_t mRTC_GetMonth(RTC_HandleTypeDef* hrtc, uint32_t Format)
 	{
 		Error_Handler();
 	}
-
 	/* Check the parameters */
 	assert_param(IS_RTC_FORMAT(Format));
-
 	/* Check the input parameters format */
 	if(Format != RTC_FORMAT_BIN)
 	{
@@ -165,10 +156,8 @@ uint16_t mRTC_GetYear(RTC_HandleTypeDef* hrtc, uint32_t Format)
 	{
 		Error_Handler();
 	}
-
 	/* Check the parameters */
 	assert_param(IS_RTC_FORMAT(Format));
-
 	/* Check the input parameters format */
 	if(Format != RTC_FORMAT_BIN)
 	{
@@ -190,10 +179,8 @@ HAL_StatusTypeDef mRTC_GetTime(RTC_HandleTypeDef* hrtc, RTC_TimeTypeDef* sTime, 
 	{
 	   return HAL_ERROR;
 	}
-
 	/* Check the parameters */
 	assert_param(IS_RTC_FORMAT(Format));
-
 	/* Check if counter overflow occurred */
 	if (__HAL_RTC_OVERFLOW_GET_FLAG(hrtc, RTC_FLAG_OW))
 	{

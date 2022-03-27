@@ -348,9 +348,8 @@ static void system_create(screen_t *scr){
 	/* edit->numberOfOptions = LANGUAGE_COUNT; */
 
 	// [Time Widget]
-	newWidget(&w, widget_combo, scr);
 	newComboEditable(w, "Time", &edit, NULL);
-	w->posY = 9;
+	/* w->posY = 9; */
 	dis = &edit->inputData;
 	dis->reservedChars = 8;
 	dis->type = field_time;
